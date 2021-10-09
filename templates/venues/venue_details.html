@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% block title%} Turn Up --Venue Details {% endblock %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+
+{% load venue_category_tags %}
+{% comment %} {% load similar_tags %} {% endcomment %}
+{% load popular_venue_tags%}
+<main id="main">
+  <br>
+  <section class="breadcrumbs">
+    <div class="container">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Venue Details</h2>
+        <ol>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'venues' %}"> Venue</a></li>
+            <li>Venue Details</li>
+        </ol>
+      </div>
+
+    </div>
+  </section><!-- End About Us Section -->
+
+ 
+  <section id="artists" class="artists">
+     <div class="container" data-aos="fade-up">
+
+       <div class="row">
+
+         <div class="col-lg-8 entries">
+
+           <article class="entry entry-single p-2">
+
+             <div class="entry-img">
+               <img src="{{venue.photo.url}}" alt="{{venue.venue_name}}" class="img-fluid">
+             </div>
+
+             <h2 class="entry-title">
+               <a href="{% url 'venue_user' venue.user %}">{{venue.venue_name}}</a>
+             </h2>
+
+             <div class="entry-meta">
+               <ul>
+                <form action="{% url 'like_venue' venue.slug %}" method = "POST">
+       {% csrf_token%}
+       {% if user.is_authenticated %}
+       {% if liked %}
+       <button type="submit" name="venue_slug" value ="{{venue.slug}}" class="btn btn-sm "> <i class="bi bi-heart text-danger"> {{ total_likes }}</i> </button>
+
+      {% else %}
+        <button type="submit" name="venue_slug" value ="{{venue.slug}}" class="btn btn-sm "><i class="bi bi-heart text-success"></i> </button>
+           {% endif%}
+           {% else %}
+            <button type="submit" name="venue_slug" value ="{{venue.slug}}" class="btn btn-sm "> <i class="bi bi-heart text-success"> {{ total_likes }}</i> </button>
+
+           {% endif %}
+           
+           </form>
+   
+                 <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a >{{ venue.created_date }}</a></li>
+                  {%  if comments.count %}
+                 <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#comments">{{ comments.count }}</a></li>
+              {% else %}
+              <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#comment"></a></li>
+           {% endif %}
+           <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="{% url 'venue_user' venue.user.username %}">{{venue.user.username}}</a></li>
+          
+               </ul>
+             </div>
+           
+<hr>
+             <div class="entry-content">
+             <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+  <h6> <u>Event :</u> </h6>   <p>  {{venue.event_name}}</p>
+               <h6> <u>Event Location :</u> </h6>   <p> {{venue.venue_county}} ,{{venue.venue_location}} </p>
+
+  </div>
+</div>
+              
+               <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    <h6> <u>Event Starts :</u> </h6>  <p> {{venue.event_start_date}}</p>
+    <h6> <u>Event Ends : </u> </h6>  <p> {{venue.event_stop_date}}</p>
+  </div>
+</div>
+              
+                <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+  <h6> <u> About The Event :</u> </h6> <p>   {{venue.event_description | safe}} </p>
+  </div>
+</div>
+               
+               <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+   <h6> <u>Other artist :</u> </h6> <p> {{venue.speaker_artist}}</p>
+  </div>
+</div>
+  
+                
+                
+                   <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+   <h6> <u>Entrance Fee :</u> </h6>   <p> {% if venue.event_fee %} Kshs {{venue.event_fee | intcomma}} {% else %} Free Entry {%endif%}</p>
+ {% if venue.event_group_charge %}
+      <h6> <u>Entrance Group Fee : </u> </h6>   <p> <span> Kshs {{venue.event_group_charge | intcomma}} </span> For  <span class="badge bg-primary px-3"> {{venue.event_group_charge_number | intcomma}}</span> </p>
+
+{% endif %}
+      {% if venue.event_attendees %}
+                   <h6> <u>Event Attendess Number :</u> </h6>  <p> {{venue.event_attendees}}</p>
+                   {% endif%}
+  </div>
+</div>
+
+ <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+   <h6> <u>Other Offers For The Event :</u> </h6> <p> {{venue.event_offer |safe}}</p>
+  </div>
+</div>
+  
+ 
+
+        <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+   <h6> <u>Event Type :</u> </h6>  <p> <span class="text-muted fw-light"><span class="badge rounded-pill bg-primary">
+
+<a class="link-light" href="{% url 'category' venue.category.slug %} ">{{ venue.category }}</a>
+</span></span></p>
+  </div>
+</div>           
+                   
+
+
+             </div>
+              {% if user.is_authenticated %}
+             {% if user.id == venue.user.id %}
+       <a href="{% url 'update_venue' venue.slug %}" class="btn  btn-primary">Edit Post</a> 
+       <a href="{% url 'delete_venue' venue.slug %}" class="btn  btn-danger">Delete Post</a> 
+            
+            {% endif %} 
+            {% endif %}
+             
+            {% comment %} <div class="entry-footer">
+               <i class="bi bi-folder"></i>
+               <ul class="cats">
+                 <li><a href="#">Business</a></li>
+               </ul>
+
+               <i class="bi bi-tags"></i>
+               <ul class="tags">
+                 <li><a href="#">Creative</a></li>
+                 <li><a href="#">Tips</a></li>
+                 <li><a href="#">Marketing</a></li>
+               </ul>
+             </div> {% endcomment %}
+
+           </article><!-- End artists entry -->
+
+           {% comment %} <div class="artists-author d-flex align-items-center">
+             <img src="assets/img/artists/artists-author.jpg" class="rounded-circle float-left" alt="">
+             <div>
+               <h4>{{artist.artist_name}}</h4>
+               <div class="social-links">
+                 <a href="https://twitters.com/#"><i class="bi bi-twitter"></i></a>
+                 <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                 <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+               </div>
+               <p>
+                 Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
+               </p>
+             </div>
+           </div><!-- End artists author bio --> {% endcomment %}
+
+           
+
+          
+           <div id="comments" class="artists-comments">
+
+             <h4 class="comments-count">{{ venue.commenting.count}} Comments</h4>
+ {% if not venue.commenting.all %}
+          No comments yet 
+          {% else %}
+          {% for comment in venue.commenting.all %}
+         
+             <div id="comment-1" class="comment">
+               <div class="d-flex">
+                 <div class="comment-img">
+                 {% if comment.user.profile.profile_pic.url %}
+                 <img src="{{ comment.user.profile.profile_pic.url }}" alt="{{comment.user.first_name}}" height="35" width="30" class="img-circle">
+                 {% else %}
+                  <img src="{% static 'img/profile/avatar.png' %}" alt="{{comment.user.first_name}}" height="35" width="30" class="img-circle">
+                 {% endif%}
+                 </div>
+                 <div>
+                   <h5><a href="">{{ comment.user.username }}</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                   {% comment %} <a href="{% url 'profile_page' artist.user.profile.id %}">Profile Page</a> {% endcomment %}
+                   {{ comment.created_date }}
+                   <p>
+                     {{ comment.body|safe }}
+                   </p>
+                 </div>
+               </div>
+             </div><!-- End comment #1 -->
+
+ {% endfor %}
+          {% endif %}
+
+
+             <div id="comment" class="reply-form">
+               <h4>Leave a Reply</h4>
+                <div class="form-group">
+          <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          {{ myform.media }}
+          <button class="btn btn-primary"> Add Comment</button>
+          </div>
+               
+             </div>
+
+           </div><!-- End artists comments -->
+
+         </div><!-- End artists entries list -->
+
+         <div class="col-lg-4">
+
+           <div class="sidebar">
+
+             <h3 class="sidebar-title">Search</h3>
+             <div class="sidebar-item search-form">
+               <form action="">
+                 <input type="text">
+                 <button type="submit"><i class="bi bi-search"></i></button>
+               </form>
+             </div><!-- End sidebar search formn-->
+
+            
+              <h3 class="sidebar-title text-center">Categories</h3>
+              <div class="sidebar-item categories">
+              {% get_all_categories as all_categories%}
+                <ul>
+                {% for category in all_categories%}
+                  <li><a href="{{ category.get_absolute_url }}">{{category.name}} {% if category.venues_count %} ({{category.venues_count}}) {% endif %}</a></li>
+                 {% empty %}
+                 <li>No Catergory Found !</li>
+                 {% endfor%}
+                </ul>
+              </div><!-- End sidebar categories-->
+
+             
+              <h3 class="sidebar-title text-center">Similar Events</h3>
+              <div class="sidebar-item recent-posts">
+
+  
+    {% for venue in object.get_related_venue_by_tags %}
+
+                <div class="post-item clearfix">
+                  {% comment %} <img src="{{artist.photo.url}}" alt="{{ artist.artist_name }}"> {% endcomment %}
+                  {% comment %} <h4><a href="{% url 'artist_user' artist.user %}">{{ artist.artist_name }}</a></h4> {% endcomment %}
+                  <h4><a href="{{ venue.get_absolute_url }}">{{ venue.event_name }}</a></h4>
+                  <time>{{venue.created_date}}</time>
+                </div>
+                <hr>
+{% empty %}
+ 
+    <p> No Similar  Venue Posted!</p>
+    
+   
+    {% endfor %} 
+                
+
+              </div><!-- End sidebar similar posts-->
+
+
+<h3 class="sidebar-title text-center">Popular Venues</h3>
+             <div class="sidebar-item categories">
+             {% get_popular_venues as popular_venues %}
+               <ul>
+               {% for venue in popular_venues %}
+                 <li><a href="{{ venue.get_absolute_url }}">{{ venue.venue_name }}</a></li>
+                 {% empty %}
+<p class="card-text"> No Popular Venues </p>
+                  {% endfor %} 
+               </ul>
+             </div><!-- End sidebar popular_venues-->
+
+
+
+           </div><!-- End sidebar -->
+
+         </div><!-- End artists sidebar -->
+
+       </div>
+
+     </div>
+   </section><!-- End artists Single Section -->
+
+</main>
+
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+{% endblock %}

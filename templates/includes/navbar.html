@@ -1,0 +1,81 @@
+{% load static %}
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top d-flex align-items-center ">
+  <div class="container d-flex justify-content-between align-items-center">
+
+    <div class="logo">
+      <h1 class="text-light"><a href="{% url 'home' %}"><span>Turn Up</span></a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html"><img src="{% static 'img/logo.png'%}" alt="" class="img-fluid"></a> -->
+    </div>
+
+    <nav id="navbar" class="navbar">
+    {% with request.resolver_match.url_name as url_name %}
+      <ul>
+        <li><a class="{% if url_name == 'home' %}active{% endif %}"href="{% url 'home' %}"> Home</a></li>
+        <li><a class="{% if url_name == 'artists' %}active{% endif %}" href="{% url 'artists' %}">Artists</a></li>
+        
+        <li><a class="{% if url_name == 'venues' %}active{% endif %}" href="{% url 'venues' %}">Venues</a></li>
+      
+        <li><a href="{% url 'events' %}">Events</a></li>
+        
+        <li><a href="{% url 'blogs' %}">Blog</a></li>
+        <li class="dropdown"><a href="#"><span>Add Event / Artist / Venue</span> <i class="bi bi-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+             <li><a href="{% url 'add_artists' %}">Add Artist Event</a></li> 
+             <hr>         
+              <li><a href="{% url 'add_venues' %}"> Add Venue Event</a></li>
+              <hr>
+            <li><a href="{% url 'add_events' %}">Add Event</a></li>
+            
+          </ul>
+        </li>  
+       
+
+
+
+           {% if user.is_authenticated %}
+            {% comment %} {% if user.profile.user.username %}
+           <li><a href="{% url 'profile' user.profile.username %}">Show my Profile</a></li>
+          {% endif%}  {% endcomment %}
+            <li class="dropdown"><a href="#"><span>Profile</span> <i class="bi bi-chevron-down"></i></a>
+            
+          <ul>
+           {% comment %} <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+            <div class="arrow_box_right"> {% endcomment %}
+            <li><a href="#">Edit Profile</a></li>           
+            {% comment %} <li><a href="{% url 'profile_page' %}">Show Profile</a></li> {% endcomment %}
+            <li><a href="#">Edit Profile Page</a></li>
+             {% comment %} </div>
+          </div> {% endcomment %}
+          <li><a href="{% url 'update_profile' %}">Edit Profile</a></li>  
+          </ul>
+        
+        </li> 
+        
+          
+           {% comment %} <li><a href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile Page</a></li> {% endcomment %}
+           {% if user.profile.user.username %}
+           <li><a href="{% url 'profile' user.profile.profile_uuid  %}">Show my Profile</a></li>
+          {% else %}
+          <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
+          
+          {% endif %} 
+           <li><a href="
+           {% url 'account_logout'%}
+           ">Logout</a></li>
+           {% else %}
+           <li><a href="{% url 'account_login' %}">Login</a></li>
+        <li><a href="
+        {% url 'account_signup'%}
+        ">Sign Up</a></li>
+       
+           {% endif %}
+        
+      </ul>
+      {% endwith %}
+      <i class="bi bi-list mobile-nav-toggle"></i>
+    </nav><!-- .navbar -->
+
+  </div>
+</header><!-- End Header -->

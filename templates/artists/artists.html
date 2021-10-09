@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% block title %} Turn Up --Artist {% endblock %}
+
+{% block content %}
+{% load static %}
+{% load artist_tags %}
+{% load artist_category_tags%}
+
+{% load humanize %}
+
+<main id="main">
+{% comment %} <div class="container">
+  <div class="row">
+  <div class="add-Event d-flex justify-content-end mt-0 mb-2 ">
+  <a href="{% url 'add_artists' %}" class="btn btn-outline-primary btn-lg">Add Artist Event </a></div>
+  </div>
+</div> {% endcomment %}
+
+    <!-- ======= artists Section ======= -->
+    <br>
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h1>Artist's Events</h1>
+
+          <ol>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li>Artist's Events</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+    <!-- ======= artists Section ======= -->
+    <section id="artists" class="artists">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-8 entries">
+ <div class="row d-flex align-items-stretch ">
+   {% for artist in object_list %}
+   
+   <div class="col-12 col-sm-6 col-md-6 ">
+     <div class="icon-box">
+     <article class="entry">
+       <div class="entry-img">
+       
+         <img src="{{artist.photo.url}}" alt="{{artist.artist_name}}" width="500"  class="img-fluid">
+       </div>
+
+       <h2 class="entry-title ps-3 mt-2">
+         <a href="{% url 'artist_detail' artist.slug %}">{{artist.artist_name}}</a>
+       </h2>
+
+       <div class="entry-meta ps-3">
+         <ul>
+             {% if artist.total_likes %}
+           <li class="d-flex align-items-center"><i class="bi bi-heart"></i> <a> {{ artist.total_likes }}</a></li>
+           {% else %}
+          <li class="d-flex align-items-center"><i class="bi bi-heart"></i></li>          
+         {% endif %} 
+           <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a>{{artist.created_date|naturaltime  }}</a></li>
+           {% if artist.comments.count %}
+           <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a >{{ artist.comments.count }}</a></li>
+        {% else %}
+<li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> </li>
+       
+        {% endif%}
+         </ul>
+       </div>
+       
+<hr>
+       <div class="entry-content ps-3 pb-2">
+
+         <p> <span class="fs-6 fw-bold m-2">Event:</span> <span class="text-muted fw-light">{{artist.event_name}}</span></p>
+         <p><span class="fs-6 fw-bold m-2">Location:</span><span class="text-muted fw-light fs-6">{{artist.event_county}}, {{artist.event_location}} </span></p>
+         <p><span class="fs-6 fw-bold m-2">Date:</span><span class="text-muted fw-light fs-6">{{artist.event_start_date}}</span></p>
+         {% if artist.event_charge %}
+         <p><span class="fs-6 fw-bold m-2">Entry Fee:</span><span class="text-muted fw-light">kshs {{artist.event_charge}}</span></p>
+        {% else %}
+         <p><span class="fs-6 fw-bold m-2">Entry Fee:</span><span class="text-muted fw-light">Free</span></p>
+        
+        {% endif%}
+         {% comment %} <p><span class="fs-6 fw-bold m-2">:</span><span class="text-muted fw-light">{{artist.other_artist}}</span></p> {% endcomment %}
+<p> <span class="fs-6 fw-bold m-2">Category:</span> <span class="badge rounded-pill bg-primary">
+
+<a href="{% url 'artist_category' artist.category.slug %}" class="link-light">{{ artist.category }}</a>
+</span></p>
+       </div>
+
+     </article><!-- End artists entry -->
+     </div>
+   </div>
+   {% empty %}
+   <div class="col-12 col-sm-12 col-md-12 ">
+     <div class="icon-box text-center">
+     <div class="card m-3 p-3">
+  <div class="card-body">
+    <h5 class="card-title">No Event Posted</h5>
+    <p class="card-text">Sorry ! No Artist Has Posted An Upcoming Event !</p>
+    <a href="{% url 'add_artists' %}" class="btn btn-primary">Add An Upcoming Event</a>
+  </div>
+</div>
+   
+
+   </div>
+   </div>
+
+
+   
+   {% endfor %}
+
+ </div>
+
+ 
+
+{% if page_obj %} <!---- check if there are object for pagination-->
+
+            <div class="artists-pagination">              
+              <ul class="justify-content-center">
+                {% if page_obj.has_previous %}
+               
+     <li>
+      <a  href="?page={{ page_obj.previous_page_number }}">
+        <span >&laquo;</span>
+      </a>
+    </li>    
+    {% endif %}
+    {% for i in page_obj.paginator.page_range %}
+             {% if page_obj.number == i %}
+                <li class="active"><a href="#">{{i}}</a></li>
+                {% else %}
+                  <li ><a href="?page={{i}}">{{i}}</a></li>
+              {% endif %}
+              {% endfor %}           
+
+{% if page_obj.has_next %}          
+              <li>
+    <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+  </li> 
+  {% endif %}
+              </ul>
+             <br> 
+            </div>
+            {% endif %}
+
+          </div><!-- End artists entries list -->
+
+          <div class="col-lg-4">
+           
+
+            <div class="sidebar">
+
+              <h3 class="sidebar-title">Search</h3>
+              {% comment %} <div class="sidebar-item search-form"> {% endcomment %}
+                {% comment %} <form  method="get">
+                  {{form.as_p}}
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form> {% endcomment %}
+              {% comment %} </div><!-- End sidebar search formn--> {% endcomment %}
+               <div class="sidebar-item search-form">
+                <form action="{% url 'search' %}" method="GET">
+                {% csrf_token %}
+                  <input type="search" name="q"  class="form-control">
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
+              </div><!-- End sidebar search formn-->
+
+<!--- start of recent artist post -->
+              
+              <h3 class="sidebar-title text-center">Recent Artist Events</h3>
+              <div class="sidebar-item recent-posts">
+{% get_recent_artists as recent_artists_list %}
+  
+    {% for artist in recent_artists_list %}
+
+                <div class="post-item clearfix">
+                  {% comment %} <img src="{{artist.photo.url}}" alt="{{ artist.artist_name }}"> {% endcomment %}
+                  {% comment %} <h4><a href="{% url 'artist_user' artist.user %}">{{ artist.artist_name }}</a></h4> {% endcomment %}
+                  <h4 class="pt-2"><a href="{{ artist.get_absolute_url }}">{{ artist.event_name }}</a></h4>
+                  {% comment %} <time>{{artist.created_date}}</time> {% endcomment %}
+                </div>
+                {% comment %} <hr> {% endcomment %}
+{% empty %}
+ 
+    <p class=""> No Recent Artist Event Posted !</p>
+  
+   
+    {% endfor %} 
+                
+
+              </div><!-- End sidebar recent posts-->
+
+               
+
+              
+<!--- start of categories -->
+                <h3 class="sidebar-title text-center">Categories</h3>
+             <div class="sidebar-item categories">
+              {% get_all_artist_categories as all_categories %} 
+               <ul>
+                {% for category in all_categories %}
+                 <li><a href="{{ category.get_absolute_url}}">{{ category.name }}  {% if category.artists_count %} <span>({{category.artists_count}})</span> {% endif %}</a></li>
+                {% empty %}
+                <li><a >No Categories Found !</a></li>
+                
+                {% endfor %}
+               </ul>
+             </div><!-- End sidebar categories-->
+
+            </div><!-- End sidebar -->
+
+          </div><!-- End artists sidebar -->
+
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+  </main><!-- End #main -->
+
+{% endblock %}

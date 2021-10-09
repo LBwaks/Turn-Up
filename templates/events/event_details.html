@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% block title%}Turn Up--Events Details {% endblock %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+{% load events_category_tags %}
+{%load humanize %}
+{%load popular_tags %}
+
+
+<main id="main">
+  <br>
+  <section class="breadcrumbs">
+    <div class="container">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h2> Event Details</h2>
+        <ol>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'artists' %}"> Events</a></li>
+            <li>Event Details</li>
+        </ol>
+      </div>
+
+    </div>
+  </section><!-- End About Us Section -->
+
+  <section id="artists" class="artists">
+     <div class="container" data-aos="fade-up">
+
+       <div class="row">
+
+         <div class="col-lg-8 entries">
+
+           <article class="entry entry-single p-2 ps-3">
+
+             <div class="single-entry-img">
+               <img src="{{event.photo.url}}" alt="{{event.event_name}}" class="img-fluid" width="500" height="200">
+             </div>
+
+             <h2 class="entry-title pt-3">
+               <a >{{event.event_name}}</a>
+             </h2>
+
+             <div class="entry-meta">
+               <ul>
+                <form action="{% url 'like_event' event.slug %}" method = "POST">
+       {% csrf_token%}
+       {% if user.is_authenticated %}
+       {% if liked %}
+       <button type="submit" name="event_slug" value ="{{event.slug}}" class="btn btn-sm "> <i class="bi bi-heart text-danger"> {% if total_likes %} {{ total_likes }} {% endif %}</i> </button>
+
+      {% else %}
+        <button type="submit" name="event_slug" value ="{{event.slug}}" class="btn btn-sm "><i class="bi bi-heart text-success"> </i> </button>
+           {% endif%}
+           {% else %}
+            <button type="submit" name="event_slug" value ="{{event.slug}}" class="btn btn-sm "> <i class="bi bi-heart text-success"> {% if total_likes %} {{ total_likes }} {% endif %}</i> </button>
+
+           {% endif %}
+           
+           </form>
+                 
+                 <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a >{{ event.created_date }}</a></li>
+                 {%  if comments.count %}
+                 <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#comments">{{ comments.count }}</a></li>
+                 {%else %}
+                  <li class="d-flex align-items-center"><a href="#comment"><i class="bi bi-chat-dots"></i> </a></li>
+                 {% endif%}
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i><a href="{% url 'event_user' event.user.username %}"> {{event.user.username}}</a></li>
+               </ul>
+             </div>
+            <hr>
+
+             <div class="entry-content">
+
+              
+
+<div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+              <h6><u> Event Starts At : </u></h6>  <p> {{event.event_start_date}}</p>
+ <h6> <u> Event Ends At : </u> </h6>  <p> {{event.event_stop_date}}</p>
+              </div>
+              </div>
+             
+             <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+<h6> <u> Event Address :</u> </h6>   <p> {{event.event_county}} ,{{event.event_location}} </p>
+
+              </div>
+              </div>
+
+             
+             <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+              <h6> <u>About The Event :  </u> </h6> <p>   {{event.event_description | safe}} </p>
+              </div>
+              </div>
+                  
+                  {% if event.event_offer %}
+               <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+               <h6> <u>Event Offers : </u> </h6> <p>   {{event.event_offer | safe}} </p>
+               </div>
+              </div>
+              {% endif%}
+               
+               {% if event.event_host %}
+<div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+               <h6> <u> The Event is Hosted By :</u> </h6> <p> {{event.event_host}}</p>
+              </div>
+              </div>
+                {% endif%}
+
+                {% if event.speaker_artist %}
+   <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+               <h6> <u>Guest Speaker / Artist :</u> </h6> <p> {{event.speaker_artist}}</p>
+              </div>
+              </div>
+              {% endif %}
+
+              
+              <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+               <h6> <u> Entrance Fee :</u> </h6>   <p> {% if event.event_charge %} kshs :{{event.event_charge | intcomma}} {% else %} Free Entry {% endif %}</p>
+               {% if event.event_group_charge %}
+               {% if event.event_group_charge_number %}
+                   <h6> <u>Group Entrance Fee:</u> </h6>   <p> <span> ksh :{{event.event_group_charge | intcomma}} </span>  For <span class="badge bg-primary px-3"> {{event.event_group_charge_number | intcomma}}</span>  Persons</p>
+                   {% endif %}
+                   {% endif %}
+              </div>
+              </div> 
+
+               
+                
+                    {% if event.event_attendees %}
+                   <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+              <h6> <u> Event Attendeess :</u> </h6>   <p>  {{event.event_attendees}}</p>
+              </div>
+              </div>
+              {% endif %}
+              <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+              <div class="card-body">
+              <h6> <u>Category : </u> </h6><p><span class="badge rounded-pill bg-primary">
+<a href="{{event.category.get_absolute_url}}" class="link-light">{{ event.category }}</a>
+</span> </p>
+              </div>
+              </div>
+             </div>
+             {% if user.is_authenticated %}
+             {% if user.id == event.user.id %}
+       <a href="{% url 'edit_event' event.slug %}" class="btn  btn-info">Edit Post</a> 
+       <a href="{% url 'delete_event' event.slug %}" class="btn  btn-danger">Delete Post</a> 
+            
+            {% endif %} 
+            {% endif %}
+            
+           
+
+           </article><!-- End artists entry -->
+
+           
+
+          
+          
+           <div id="comments" class="artists-comments">
+
+             
+             <h4 class="comments-count">{{ event.comments.count}} Comments</h4>
+ {% if not event.comments.all %}
+          No comments yet 
+          {% else %}
+          {% for comment in event.comments.all %}
+         
+             <div id="comment-1" class="comment">
+               <div class="d-flex">
+                 <div class="comment-img">
+                 {% if comment.user.profile.profile_pic.url %}
+                 <img src="{{ comment.user.profile.profile_pic.url }}" alt="{{comment.user.first_name}}" height="35" width="30" class="img-circle">
+                 {% else %}
+                  <img src="{% static 'img/profile/avatar.png' %}" alt="{{comment.user.first_name}}" height="35" width="30" class="img-circle">
+                 {% endif%}
+                 </div>
+                 <div>
+                   <h5><a href="">{{ comment.user.username }}</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                   {% comment %} <a href="{% url 'profile_page' artist.user.profile.id %}">Profile Page</a> {% endcomment %}
+                   {{ comment.created_date }}
+                   <p>
+                     {{ comment.body|safe }}
+                   </p>
+                 </div>
+               </div>
+             </div><!-- End comment #1 -->
+
+ {% endfor %}
+          {% endif %}
+
+             <div class="reply-form">
+               <h4>Leave a Reply</h4>
+               <p>Your email address will not be published. Required fields are marked * </p>
+               <div class="form-group">
+          <form id="comment" method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          {{ myform.media }}
+          <button class="btn btn-primary"> Add Comment</button>
+               </div>
+
+             </div>
+
+           </div><!-- End artists comments -->
+
+         </div><!-- End artists entries list -->
+
+         <div class="col-lg-4">
+
+           <div class="sidebar">
+
+             <h3 class="sidebar-title">Search</h3>
+             <div class="sidebar-item search-form">
+               <form action="">
+                 <input type="text">
+                 <button type="submit"><i class="bi bi-search"></i></button>
+               </form>
+             </div><!-- End sidebar search formn-->
+
+
+                 <h3 class="sidebar-title  text-center">Similar Events</h3>
+             <div class="sidebar-item recent-posts ">              
+{% for  event in object.get_related_event_by_tags %}
+               <div class="post-item clearfix">
+                 {% comment %} <img src="{{events.get_absolute_url}}" alt=""> {% endcomment %}
+                 <h4 class=""><a href="{{event.get_absolute_url}}">{{event.event_name}}</a></h4>
+                 <time>{{event.created_date}}</time>
+                 <hr>
+               </div>
+                {% empty %}  
+
+    <p> No Similar Event </p>
+  
+
+{% endfor %}
+</div>
+
+<!------ start popular events -->
+<h3 class="sidebar-title text-center">Popular Venues</h3>
+            <div class="sidebar-item categories">
+             {% get_popular_events as popular_events %}
+               <ul>
+               {% for event in popular_events %}
+                 <li><a href="{{ event.get_absolute_url }}">{{ event.event_name }}</a></li>
+                 {% empty %}
+<p class="card-text"> No Popular Events </p>
+                  {% endfor %} 
+               </ul>
+             </div><!-- End events--> 
+
+<h3 class="sidebar-title text-center">Categories</h3>
+                <div class="sidebar-item categories">
+                  <ul>
+                  {% get_all_events_categories as categories %}
+                  {% for category in categories%}
+                    <li><a href="{{category.get_absolute_url}}">{{category.name}}<span> {% if category.events_count %} ({{category.events_count}}) {%endif %} </span></a></li>
+                    {% empty %}
+  
+    <p> No Categeries Found ! </p>
+    
+  
+                    {% endfor %}
+                    
+                  </ul>
+                </div><!-- End sidebar categories-->
+
+
+         
+             
+
+            
+           </div><!-- End sidebar -->
+
+         </div><!-- End artists sidebar -->
+
+       </div>
+
+     </div>
+   </section><!-- End artists Single Section -->
+
+</main>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+{% endblock %}

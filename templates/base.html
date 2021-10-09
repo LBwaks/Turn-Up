@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %}{% endblock %}</title>
+  {% comment %} {% block extra_head %}
+    {% endblock %} {% endcomment %}
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'img/favicon.png'%}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href=" {% static 'plugins/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href=" {% static 'plugins/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href=" {% static 'plugins/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'plugins/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/style.css' %}?{% now "U" %}" rel="stylesheet">
+
+  
+</head>
+
+<body>
+
+ 
+
+  {% block header %}
+     {% include 'includes/navbar.html' %}
+{% endblock %}
+
+  {% include 'includes/messages.html' %}
+  
+   
+  {% block content%}
+
+
+  {% endblock %}
+  {% comment %} {% endblock %} {% endcomment %}
+{% block footer %}
+   {% include 'includes/footer.html' %}
+{% endblock %}
+
+<script>
+var message_ele = document.getElementById("messages");
+
+setTimeout(function(){ 
+   message_ele.style.display = "none"; 
+}, 3000);
+</script>
+  <!-- Vendor JS Files -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  {% comment %} <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script> {% endcomment %}
+  <script src="{% static 'plugins/aos/aos.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'plugins/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'plugins/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'plugins/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'plugins/purecounter/purecounter.js' %}"></script>
+  <script src="{% static 'plugins/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'plugins/waypoints/noframework.waypoints.js' %}"></script>
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <script>
+ $(document).on('click', '#like', function(event){
+  $(document).on('click','#like',function(event){
+    event.preventDefault();
+    console.log("from jquery section")
+    var pk =$(this).attr('value');
+    $.ajax({
+      type: 'POST'
+      url :'{% url 'like_artist' %}',
+      
+      data :{
+        'post_id':pk,
+        'csrfmiddlewaretoken':'{{csrf_token}}'
+      },
+      datatype:'json',
+      success:function(response){
+        $('#like-section').html(response['form'])
+        console.log($('#like-section').html(response['form']));
+      },
+      error:function(rs,e){
+        console.log(rs.responceText);
+      },
+    });
+  });
+});
+</script>
+</body>
+
+</html>

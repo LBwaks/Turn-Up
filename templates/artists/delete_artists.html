@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %} Delete Artist's Event {% endblock %}
+{% block content %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<main id="main">
+
+    <!-- ======= artists Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Artist's Event</h2>
+
+          <ol>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'artists' %}">Artist</a></li>
+            <li>Delete Artists Event</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+    <!-- ======= artists Section ======= -->
+    <section id="artists" class="artists">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-6 col-md-6 mx-auto d-flex  justify-content-center">
+           {% if user.is_authenticated %}
+             {% if user.id == artist.user.id %}
+             <div class="card" style="width: 25rem;">
+  <div class="card-header text-center">
+    {{artist.artist_name}}
+  </div>
+  <div class="card-body">
+    {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
+    <p> <span class="fs-6 fw-bold m-2">Event:</span> <span class="text-muted fw-light">{{artist.event_name}}</span></p>
+         <p><span class="fs-6 fw-bold m-2">Location:</span><span class="text-muted fw-light fs-6">{{artist.event_county}}, {{artist.event_location}} </span></p>
+         <p><span class="fs-6 fw-bold m-2">Date:</span><span class="text-muted fw-light fs-6">{{artist.event_start_date}}</span></p>
+         {% if artist.event_charge %}
+         <p><span class="fs-6 fw-bold m-2">Entry Fee:</span><span class="text-muted fw-light">kshs {{artist.event_charge}}</span></p>
+        {% else %}
+         <p><span class="fs-6 fw-bold m-2">Entry Fee:</span><span class="text-muted fw-light">Free</span></p>
+        
+        {% endif%}
+         {% comment %} <p><span class="fs-6 fw-bold m-2">:</span><span class="text-muted fw-light">{{artist.other_artist}}</span></p> {% endcomment %}
+<p> <span class="fs-6 fw-bold m-2">Catergory:</span> <span class="badge rounded-pill bg-primary">
+
+<a href="{% url 'category' artist.category.slug %}" class="link-light">{{ artist.category }}</a>
+</span></p>
+   
+  </div>
+  <div class="card-footer text-muted bg-white text-center">
+  <form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+{{ form|crispy }}
+    <div class="d-grid gap-2 col-6 mx-auto">
+  <button class="btn btn-danger"> Confirm Delete</button>
+  
+</div>
+  </div>
+</div>
+  
+ 
+{% comment %} <div class="mb-3">
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+{{ form|crispy }}
+<button>Delete</button>
+</div> {% endcomment %}
+           {% else %} 
+              You Do not own this!
+          {% endif%}
+         {% endif%} 
+
+          </div>
+          <!-- End artists entries list -->
+
+
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+  </main><!-- End #main -->
+
+{% endblock %}

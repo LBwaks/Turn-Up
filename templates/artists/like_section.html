@@ -1,0 +1,15 @@
+<form action="{% url 'like_artist' %}" method = "POST">
+       {% csrf_token%}
+       {% if user.is_authenticated %}
+       {% if liked %}
+       <button type="submit" id="like" name="artist_id" value ="{{artist.id}}" class="btn btn-sm "> <i class="bi bi-heart text-danger"> {% if total_likes %} {{ total_likes }} {% endif %} </i> </button>
+
+      {% else %}
+        <button type="submit" id="like" name="artist_id" value ="{{artist.id}}" class="btn btn-sm "><i class="bi bi-heart text-success"> </i> </button>
+           {% endif%}
+           {% else %}
+            <button type="submit" id="like" name="artist_id" value ="{{artist.id}}" class="btn btn-sm "> <i class="bi bi-heart text-success">  {% if total_likes %} {{ total_likes }} {% endif %}</i> </button>
+
+           {% endif %}
+           
+           </form>

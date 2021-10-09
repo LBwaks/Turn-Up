@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block title %} Venues Per User {% endblock %}
+{% block content %}
+{% load static %}
+{% load humanize%}
+{% load venue_tags %}
+{% load venue_category_tags %}
+<main id="main">
+<br>
+    <!-- ======= artists Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>{{venue_user.username}}</h2>
+
+          <ol>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'venues' %}">Venues</a></li>
+            <li>{{venue_user.username}}</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+    <!-- ======= artists Section ======= -->
+    <section id="artists" class="artists">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-8 entries">
+ <div class="row d-flex align-items-stretch">
+
+ {% for venue in venues %}
+   <div class="col-12 col-sm-12 col-md-12">
+      
+     <article class="entry">
+     <div class="row d-flex align-items-stretch">
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 p-2">
+       <div class="entry-img">
+         <img src="{{venue.photo.url}}" alt="{{venue.venue_name}}" width="400" height="300" class="img-fluid">
+       </div>
+</div>
+
+      <div class="col-12 col-sm-12 col-md-8 col-lg-8">
+       <h2 class="entry-title">
+         <a href="{% url 'venue_details' venue.slug %}">{{venue.venue_name}}</a>
+       </h2>
+
+       <div class="entry-meta">
+        <ul>
+             {% if artist.total_likes %}
+           <li class="d-flex align-items-center"><i class="bi bi-heart"></i> <a> {{ venue.total_likes }}</a></li>
+           {% else %}
+          <li class="d-flex align-items-center"><i class="bi bi-heart"></i></li>          
+         {% endif %} 
+           <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a>{{venue.created_date|naturaltime  }}</a></li>
+           {% if venue.comments.count %}
+           <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a >{{ venue.comments.count }}</a></li>
+        {% else %}
+<li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> </li>
+       
+        {% endif%}
+         </ul>
+        
+       </div>
+       
+<hr>
+       <div class="entry-content">
+
+         
+         <p><span class="fs-6 fw-bold m-2">Event:</span><span class="text-muted fw-light">{{ venue.event_name }} </span></p>
+         <p><span class="fs-6 fw-bold m-2">Location:</span><span class="text-muted fw-light">{{venue.venue_county}}, {{venue.venue_location}}</span></p>
+         <p><span class="fs-6 fw-bold m-2">Date:</span><span class="text-muted fw-light">{{ venue.event_start_date }}</span></p>
+        {%if venue.event_fee %}
+        <p><span class="fs-6 fw-bold m-2">Charges:</span><span class="text-muted fw-light">Kshs {{venue.event_fee}}</span></p>
+        {% else %}
+<p><span class="fs-6 fw-bold m-2">Charges:</span><span class="text-muted fw-light">Free Entry</span></p>
+        {% endif%}
+         <p><span class="fs-6 fw-bold m-2">Event Type:</span><span class="text-muted fw-light"><span class="badge rounded-pill bg-primary">
+
+<a class="link-light" href="{% url 'category' venue.category.slug %} ">{{ venue.category }}</a>
+</span></span></p>
+        
+         
+        </div>
+</div>
+</div>
+     </article><!-- End artists entry -->
+    
+   </div>
+
+    {% empty %}
+   <div class="col-12 col-sm-12 col-md-12 ">
+     <div class="icon-box text-center">
+     <div class="card m-3 p-3">
+  <div class="card-body">
+    <h5 class="card-title">No Event Posted</h5>
+    <p class="card-text">Sorry ! No Venue Has Posted An Upcoming Event !</p>
+    <a href="{% url 'add_venues' %}" class="btn btn-primary">Add An Upcoming Event</a>
+  </div>
+</div>
+   
+
+   </div>
+   </div>
+         {% endfor%}
+    
+ </div>
+
+
+             <div class="artists-pagination"> 
+            {% if venues.has_other_pages %}
+  <ul class="justify-content-center">
+    {% if venues.has_previous %}
+      <li><a href="?page={{ venues.previous_page_number }}">&laquo;</a></li>
+    {% endif %}
+
+    {% for i in venues.paginator.page_range %}
+      {% if venues.number == i %}
+        <li class="active"><a href="#">{{ i }} </a></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}  
+
+    {% endfor %}
+    {% if venues.has_next %}
+      <li><a href="?page={{ venues.next_page_number }}">&raquo;</a></li>
+    
+    {% endif %}
+  </ul>
+{% endif %}             
+              
+             
+            </div>
+          </div><!-- End venues entries list -->
+
+          <div class="col-lg-4">
+           
+
+            <div class="sidebar">
+
+              <h3 class="sidebar-title">Search</h3>
+              <div class="sidebar-item search-form">
+                <form action="">
+                  <input type="text">
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
+              </div><!-- End sidebar search formn-->
+              
+
+              <h3 class="sidebar-title text-center">Categories</h3>
+              <div class="sidebar-item categories">
+              {% get_all_categories as all_categories%}
+                <ul>
+                {% for category in all_categories%}
+                  <li><a href="{{ category.get_absolute_url }}">{{category.name}} {% if category.venues_count %} ({{category.venues_count}}) {% endif %}</a></li>
+                 {% empty %}
+                 <li>No Catergory Found !</li>
+                 {% endfor%}
+                </ul>
+              </div><!-- End sidebar categories-->
+
+              <h3 class="sidebar-title text-center">Recent Venue Post</h3>
+              <div class="sidebar-item recent-posts">
+{% get_recent_venues as recent_venues_list %}
+{% for venue in recent_venues_list %}
+                <div class="post-item clearfix">
+                  {% comment %} <img src="{{venue.photo.url}}" alt="{{venue.venue_name}}"> {% endcomment %}
+                  <h4><a href="{{venue.get_absolute_url}}">{{venue.venue_name}}</a></h4>
+                  <hr> 
+                  {% comment %} <time>{{venue.created_date}}</time> {% endcomment %}
+                </div>
+                {% empty %}
+
+
+
+    <p class="card-text text-center"> No Recent Artist Event !</p>
+    
+ 
+{% endfor%}
+                
+              </div><!-- End sidebar recent posts-->
+
+             
+
+            </div><!-- End sidebar -->
+          </div><!-- End artists sidebar -->
+
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+  </main><!-- End #main -->
+
+{% endblock %}

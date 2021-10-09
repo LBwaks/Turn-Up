@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title%} Profile Page {% endblock %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+<main id="main">
+  <br>
+  <section class="breadcrumbs">
+    <div class="container">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>My Profile</h2>
+        <ol>
+          <li><a href="{% url 'home' %}">Home</a></li>
+         
+            <li>{{ user.first_name }}
+{{ user.last_name }}</li>
+        </ol>
+      </div>
+
+    </div>
+  </section>
+  
+  <section id="artists" class="artists">
+     <div class="container" data-aos="fade-up">
+
+        <div class="card">
+  <div class="card-body">
+<div class="container">
+<div class="row">
+<div class="col-md-4 col-lg-4 col-sm-12 "> 
+<div class="card border-secondary mb-3" style="max-width: 19rem;">
+  <div class="card-body">
+  <h5 class="card-title text-center "> <u>Personal Info </u></h5>
+  <div class="profile-pic mb-4 mx-auto d-flex justify-content-center">
+  <img src="{{user.profile.profile_pic.url }}" alt="{{ user.username }}" width="150" height="150" class="rounded-circle">
+   
+  </div>
+
+     
+
+
+
+<p> <span class="fw-bold"> Username :</span> <span class="text-muted fw-lighter">{{ user.username }}</span></p>
+<hr>
+  <p> <span class="fw-bold">Name :</span> <span class="text-muted fw-lighter">{{ user.first_name }} {{ user.last_name }} </span></p>
+  <hr>  
+
+<p> <span class="fw-bold">Email :</span> <span class="text-muted fw-lighter">{{user.email}}</span></p>
+<hr>
+
+<p> <span class="fw-bold">Gender :</span> <span class="text-muted fw-lighter">{{user.profile.gender}}</span></p>
+<hr>
+<p> <span class="fw-bold">Tell :</span> <span class="text-muted fw-lighter">{{user.profile.phone_number}}</span></p>
+ 
+
+<p> <span class="fw-bold">Address :</span> <span class="text-muted fw-lighter">{{user.profile.City}} {{user.profile.address}}</span></p>
+  <hr>
+  <p> <span class="fw-bold">Bio :</span> <span class="text-muted fw-lighter">{{user.profile.bio}} </span></p>
+ <div class="text-center">
+ <a href="{% url 'edit_profile_page' user.profile.profile_uuid %}" class="btn btn-primary">Edit Info</a></div>
+  </div>
+</div>
+
+<div class="card border-secondary mb-3" style="max-width: 19rem;">
+  <div class="card-body">
+  <h5 class="card-title text-center "> <u>Account Info </u></h5>
+  <div class="d-grid gap-2">
+  <a class="btn btn-info" href="{% url 'update_profile' %}">Change Account Info</a>
+  
+</div>
+  </div>
+  </div>
+ </div>
+<div class="col-md-8 col-lg-8 col-sm-12">
+<div class="card">
+  <div class="card-header">
+   <nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-artists-tab" data-bs-toggle="tab" data-bs-target="#nav-artists" type="button" role="tab" aria-controls="nav-artists" aria-selected="true">Artist</button>
+    <button class="nav-link" id="nav-venues-tab" data-bs-toggle="tab" data-bs-target="#nav-venues" type="button" role="tab" aria-controls="nav-venues" aria-selected="false">Venue</button>
+    <button class="nav-link" id="nav-events-tab" data-bs-toggle="tab" data-bs-target="#nav-events" type="button" role="tab" aria-controls="nav-events" aria-selected="false">Event</button>
+  </div>
+</nav>
+  </div>
+  <div class="card-body">
+  <div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-artists" role="tabpanel" aria-labelledby="nav-artists-tab">
+  
+  <div class="card  mb-3">
+  <div class="card-body">
+
+<p> <span class="fw-bold"> Type Of Artist:</span> <span class="text-muted fw-lighter">{{user.profile.type_of_artists }}</span></p>
+
+  </div>
+</div>
+  
+  </div>
+  <div class="tab-pane fade" id="nav-venues" role="tabpanel" aria-labelledby="nav-venues-tab">
+ <div class="card  mb-3" >
+  <div class="card-body">
+
+  <p> <span class="fw-bold">Venue Name  :</span> <span class="text-muted fw-lighter">{{user.profile.venue_name}} </span></p>
+ 
+<p> <span class="fw-bold">Venue Email  :</span> <span class="text-muted fw-lighter">{{user.profile.venue_email}}</span></p>
+ 
+<p> <span class="fw-bold">Venue Tell :</span> <span class="text-muted fw-lighter">{{user.profile.venue_no}}</span></p>
+
+  </div>
+</div>
+  
+  </div>
+  <div class="tab-pane fade" id="nav-events" role="tabpanel" aria-labelledby="nav-events-tab">
+ 
+ 
+ <div class="card  mb-3" >
+  <div class="card-body">
+  <p> <span class="fw-bold"> Event Organization/Company:</span> <span class="text-muted fw-lighter">{{user.profile.organisation_name}}</span></p>
+
+
+<p> <span class="fw-bold"> Event Organization/Company Email:</span> <span class="text-muted fw-lighter">{{user.profile.organisation_email}}</span></p>
+
+
+
+
+  </div>
+</div>
+  </div>
+</div>
+  
+  </div>
+  
+
+<div class="card-footer d-flex justify-content-evenly">
+{% if user.profile.facebook_url %}
+<div> <a href="{{user.profile.facebook_url}}"> <i class="bi bi-facebook"></i></a> </div>
+{% endif %}
+{% if user.profile.twitter_url %}
+<div> <a href=" {{user.profile.twitter_url}} "><i class="bi bi-twitter"></i> </a> </div>
+{% endif %} 
+{% if user.profile.instagram_url %}
+<div> <a href="{{user.profile.instagram_url}}"><i class="bi bi-instagram"></i></a> </div>
+{% endif %}
+{% if user.profile.website_url %}
+ <div> <a href="{{user.profile.website_url}}"> My Website</a> </div>
+{% endif %}
+</div>
+ 
+  
+</div>
+</div>
+
+</div>
+</div>
+
+    
+  </div>
+</div> 
+
+
+
+{% comment %} {{user.profile.type_of_user}}
+<br>
+
+
+ {% endcomment %}
+
+
+
+
+        
+
+     </div>
+   </section><!-- End artists Single Section -->
+
+</main>
+
+
+{% endblock %}

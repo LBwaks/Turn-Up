@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% block title%} Artists Event Details{% endblock %}
+{% block content %}
+{% load humanize %}
+{% load static %}
+{% load popular_artist_tags%}
+{% comment %} {% load similar_tags %} {% endcomment %}
+{% load artist_category_tags%}
+<main id="main">
+
+<br>
+  
+  <section class="breadcrumbs">
+    <div class="container">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <h1>Artist's Event Details</h1>
+        <ol>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'artists' %}"> Artists</a></li>
+            <li>Artists Event Details</li>
+        </ol>
+      </div>
+
+    </div>
+  </section>
+
+
+  <section id="artists" class="artists">
+     <div class="container" data-aos="fade-up">
+
+       <div class="row">
+
+         <div class="col-lg-8 entries">
+
+           <article class="entry entry-single p-2">
+
+             <div class="single-entry-img">
+               <img src="{{artist.photo.url}}" alt="{{artist.artist_name | truncatechars:10}}" class="img-fluid"  height="250">
+             </div>
+<br>
+             <h2 class="entry-title">
+               <a href="{% url 'artist_user' artist.user %}">{{artist.artist_name}}</a>
+             </h2>
+
+             <div class="entry-meta">
+               <ul>
+                <div id="like-section"> 
+                {% include 'artists/like_section.html'%}
+                 </div>
+                {% comment %} <li class="d-flex align-items-center"><i class="bi bi-heart text-danger"></i> <a href="artists-single.html">{{ total_likes }}</a></li> {% endcomment %}
+          
+         
+                 <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a>{{ artist.created_date }}</a></li>
+                 {%  if comments.count %}
+                 <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#comments">{{ comments.count }}</a></li>
+                {% else %}
+                <li class="d-flex align-items-center"><a href="#comment"><i class="bi bi-chat-dots"></i> </a></li>
+                 {% endif %}
+               </ul>
+             </div>
+            
+<hr>
+             <div class="entry-content">
+             <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    {% comment %} <h5 class="card-title">Card title</h5> {% endcomment %}
+
+             <h6> <u>Event :</u> </h6>   <p>  {{artist.event_name}}</p>
+             <h6> <u>Event Location :</u> </h6>   <p> {{artist.event_county}} ,{{artist.event_location}} </p>
+             
+              </div>
+</div>
+             <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    {% comment %} <h6 class="card-title">Card title</h6> {% endcomment %}
+<h6> <u>Event Starts :</u> </h6>  <p> {{artist.event_start_date}}</p>
+              <h6> <u>Event Ends At :</u>  </h6>   <p>{{artist.event_end_date}}</p>
+               </div>
+</div>
+              <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    {% comment %} <h6 class="card-title">Card title</h6> {% endcomment %}
+              
+                 
+               <h6><u>Description :</u> </h6> <p>   {{artist.event_description | safe}} </p>
+
+               </div>
+               </div>
+               <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    {% comment %} <h6 class="card-title">Card title</h6> {% endcomment %}
+
+                 <h6> <u>Entrance Fee :</u> </h6>   {% if artist.event_charge  %}<p> kshs :{{artist.event_charge | intcomma}}</p>{% else %} <p> Free Entry</p> {% endif %}
+{% if artist.event_group_charge %}
+                 <h6> <U>Group Entrance Fee :</U> </h6>   <p> <span > kshs :{{artist.event_group_charge | intcomma}}  </span> For  <span class="badge bg-primary px-3"> {{artist.event_group_charge_number}} </span> Persons</p>
+                 {% endif %}
+                 {% comment %} <h6> Number Of People Per Group :</h6>   <p> kshs : <span class="badge bg-primary">7</span></p> {% endcomment %}
+                  </div>
+</div>
+{% if artist.event_offer %}
+     <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    {% comment %} <h6 class="card-title">Card title</h6> {% endcomment %}
+                 <h6> <u>Offers For The Event :</u> </h6>   <p> {{artist.event_offer | safe}}</p>
+                 </div>
+               </div>
+                 {% endif %}
+                      <div class="card mt-2 shadow  mb-5 bg-body rounded ">
+  <div class="card-body">
+    {% comment %} <h6 class="card-title">Card title</h6> {% endcomment %}
+                   <h6> <u>Category :</u> </h6><p> <span class="badge rounded-pill bg-primary">
+<a href="{% url 'artist_category' artist.category.slug %}" class="link-light">{{ artist.category }}</a>
+</span>
+ </p>
+</div>
+               </div>
+             </div>
+             
+             {% if user.is_authenticated %}
+             {% if user.id == artist.user.id %}
+       <a href="{% url 'update_artist' artist.slug %}" class="btn  btn-primary">Edit Post</a> 
+       <a href="{% url 'delete_artist' artist.slug %}" class="btn  btn-danger">Delete Post</a> 
+            
+            {% endif %} 
+            {% endif %}
+            
+            {% comment %} <div class="entry-footer">
+               <i class="bi bi-folder"></i>
+               <ul class="cats">
+                 <li><a href="#">Business</a></li>
+               </ul>
+
+               <i class="bi bi-tags"></i>
+               <ul class="tags">
+                 <li><a href="#">Creative</a></li>
+                 <li><a href="#">Tips</a></li>
+                 <li><a href="#">Marketing</a></li>
+               </ul>
+             </div> {% endcomment %}
+
+           </article><!-- End artists entry -->
+
+           {% comment %} <div class="artists-author d-flex align-items-center">
+             <img src="assets/img/artists/artists-author.jpg" class="rounded-circle float-left" alt="">
+             <div>
+               <h4>{{artist.artist_name}}</h4>
+               <div class="social-links">
+                 <a href="https ://twitters.com/#"><i class="bi bi-twitter"></i></a>
+                 <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                 <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+               </div>
+               <p>
+                 Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
+               </p>
+             </div>
+           </div><!-- End artists author bio --> {% endcomment %}
+
+           
+
+ {% comment %} <a href="{% url 'profile_page' artist.user.profile.id %}">Profile Page</a> {% endcomment %}
+                
+         
+
+           <div id="comments" class="artists-comments">
+
+             <h4 class="comments-count">{{ artist.comments.count}} Comments</h4>
+ {% if not artist.comments.all %}
+          No comments yet 
+          {% else %}
+          {% for comment in artist.comments.all %}
+         
+             <div id="comment-1" class="comment">
+               <div class="d-flex">
+                 <div class="comment-img">
+                 {% if comment.user.profile.profile_pic.url %}
+                 <img src="{{ comment.user.profile.profile_pic.url }}" alt="{{comment.user.first_name}}" height="35" width="30" class="img-circle">
+                 {% else %}
+                  <img src="{% static 'img/profile/avatar.png' %}" alt="{{comment.user.first_name}}" height="35" width="30" class="img-circle">
+                 {% endif%}
+                 </div>
+                 <div>
+                   <h5><a href="">{{ comment.user.username }}</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                     {{ comment.created_date }}
+                   <p>
+                     {{ comment.body|safe }}
+                   </p>
+                 </div>
+               </div>
+             </div><!-- End comment #1 -->
+
+ {% endfor %}
+          {% endif %}
+
+
+             {% comment %} <div id="comment-2" class="comment">
+               <div class="d-flex">
+                 <div class="comment-img"><img src="assets/img/artists/comments-2.jpg" alt=""></div>
+                 <div>
+                   <h5><a href="">Aron Alvarado</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                   <time datetime="2020-01-01">01 Jan, 2020</time>
+                   <p>
+                     Ipsam tempora sequi voluptatem quis sapiente non. Autem itaque eveniet saepe. Officiis illo ut beatae.
+                   </p>
+                 </div>
+               </div> {% endcomment %}
+
+               {% comment %} <div id="comment-reply-1" class="comment comment-reply">
+                 <div class="d-flex">
+                   <div class="comment-img"><img src="assets/img/artists/comments-3.jpg" alt=""></div>
+                   <div>
+                     <h5><a href="">Lynda Small</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                     <time datetime="2020-01-01">01 Jan, 2020</time>
+                     <p>
+                       Enim ipsa eum fugiat fuga repellat. Commodi quo quo dicta. Est ullam aspernatur ut vitae quia mollitia id non. Qui ad quas nostrum rerum sed necessitatibus aut est. Eum officiis sed repellat maxime vero nisi natus. Amet nesciunt nesciunt qui illum omnis est et dolor recusandae.
+
+                       Recusandae sit ad aut impedit et. Ipsa labore dolor impedit et natus in porro aut. Magnam qui cum. Illo similique occaecati nihil modi eligendi. Pariatur distinctio labore omnis incidunt et illum. Expedita et dignissimos distinctio laborum minima fugiat.
+
+                       Libero corporis qui. Nam illo odio beatae enim ducimus. Harum reiciendis error dolorum non autem quisquam vero rerum neque.
+                     </p>
+                   </div>
+                 </div>
+
+                 <div id="comment-reply-2" class="comment comment-reply">
+                   <div class="d-flex">
+                     <div class="comment-img"><img src="assets/img/artists/comments-4.jpg" alt=""></div>
+                     <div>
+                       <h5><a href="">Sianna Ramsay</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                       <time datetime="2020-01-01">01 Jan, 2020</time>
+                       <p>
+                         Et dignissimos impedit nulla et quo distinctio ex nemo. Omnis quia dolores cupiditate et. Ut unde qui eligendi sapiente omnis ullam. Placeat porro est commodi est officiis voluptas repellat quisquam possimus. Perferendis id consectetur necessitatibus.
+                       </p>
+                     </div>
+                   </div>
+
+                 </div><!-- End comment reply #2-->
+
+               </div><!-- End comment reply #1--> {% endcomment %}
+
+             {% comment %} </div><!-- End comment #2--> {% endcomment %}
+
+            
+
+            
+
+             <div id="comment" class="reply-form">
+               <h4>Leave a Reply</h4>
+              
+               <div class="form-group">
+          <form  method="POST">
+         {% csrf_token %}
+        {{ myform.media }}
+{{ form.as_p }}
+{{ form.errors }}
+          
+          <button  class="btn btn-primary">Post Comment</button>
+</div>
+               
+
+             </div>
+
+           </div><!-- End artists comments -->
+
+         </div><!-- End artists entries list -->
+
+         <div class="col-lg-4">
+
+           <div class="sidebar">
+
+
+
+             <h3 class="sidebar-title">Search</h3>
+             <div class="sidebar-item search-form">
+               <form action="">
+                 <input type="text">
+                 <button type="submit"><i class="bi bi-search"></i></button>
+               </form>
+             </div><!-- End sidebar search formn-->
+
+<!---- get similar to that post-->
+             <h3 class="sidebar-title">Similar Artist Events</h3>
+              <div class="sidebar-item recent-posts">  
+    {% for artist in object.get_related_artist_by_tags %}
+                <div class="post-item clearfix">                
+                  <h4><a href="{{ artist.get_absolute_url }}">{{ artist.event_name }}</a></h4>
+                  <time>{{artist.created_date}}</time>
+                </div>                
+{% empty %} 
+    <p> No Similar Artist Event Posted!</p>
+       {% endfor %} 
+
+              </div>
+              <!---- end get similar to that post-->
+
+              <!------ get Popular artist -->
+              <h3 class="sidebar-title ">Popular Venues</h3>
+             <div class="sidebar-item categories">
+             {% get_popular_artists as popular_artists %}
+               <ul>
+               {% for artist in popular_artists %}
+                 <li><a href="{{ artist.get_absolute_url }}">{{ artist.event_name }}</a></li>
+                 {% empty %}
+<p class="card-text"> No Popular Venues </p>
+                  {% endfor %} 
+               </ul>
+             </div><!-- End  popular_venues-->
+
+            <h3 class="sidebar-title">Categories</h3>
+             <div class="sidebar-item categories">
+              {% get_all_artist_categories as all_categories %} 
+               <ul>
+                {% for category in all_categories %}
+                 <li><a href="{{ category.get_absolute_url}}">{{ category.name }}  {% if category.artists_count %} <span>({{category.artists_count}})</span> {% endif %}</a></li>
+                {% empty %}
+                <li><a >No Category Posted</a></li>
+                
+                {% endfor %}
+               </ul>
+             </div><!-- End sidebar categories-->
+
+             
+            
+           </div><!-- End sidebar -->
+
+         </div><!-- End artists sidebar -->
+
+       </div>
+
+     </div>
+   </section><!-- End artists Single Section -->
+
+</main>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+{% endblock %}

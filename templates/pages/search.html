@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %} Search Results {% endblock %}
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+  <main id="main">
+  <br>
+      <!-- ======= artists Section ======= -->
+      <section class="breadcrumbs">
+        <div class="container">
+
+          <div class="d-flex justify-content-between align-items-center">
+            <h2>Events</h2>
+
+            <ol>
+              <li><a href="{% url 'home' %}">Home</a></li>
+              <li>Events</li>
+            </ol>
+          </div>
+
+        </div>
+      </section><!-- End artists Section -->
+
+      {% if q %}
+      <h1> You searched {{q}}</h1>
+      {% endif %}
+<h1>    Hey am results </h1>
+<p>{% with artists.count as total_artists %} Found {{total_artists}}  result {{total_results|pluralize}} {% endwith %}</p>
+for artist <br>
+{% for artist in artists %}
+
+{{artist.artist_name}} -----------{{artist.created_date}}------{{artist.event_name}}-----
+<br>
+{{artist.event_description}}
+<br>
+{% endfor %}
+<br>
+{% comment %} for venues <br>
+{% for venue in venues %}
+ 
+{{venue.venue_name}}
+{% endfor %} {% endcomment %}
+
+{% comment %} {{artist.artist_name}} {% endcomment %}
+{% comment %} {% endfor %} {% endcomment %}
+      </main><!-- End #main -->
+{% endblock%}

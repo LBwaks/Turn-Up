@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block title %} User Events {% endblock %}
+{% block content %}
+{% load static %}
+{%load humanize %}
+{%load events_tags %}
+{% load events_category_tags %}
+<main id="main">
+<br>
+    <!-- ======= artists Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>{{event_user.username}}</h2>
+
+          <ol>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'events' %}">Events</a></li>
+            <li>{{event_user.username}} Event's</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+    <!-- ======= artists Section ======= -->
+    <section id="artists" class="artists">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-8 entries">
+ <div class="row d-flex align-items-stretch">
+
+ {% for event in events %}
+     <div class="col-12 col-sm-6 col-md-6 ">
+       <div class="icon-box ">
+       <article class="entry">
+         <div class="entry-img">
+           <img src="{{event.photo.url}}" alt="{{event.event_name}}"width="500"  class="img-fluid">
+         </div>
+
+         <h2 class="entry-title ps-3 mt-2">
+           <a href="{% url 'event_details' event.slug %}">{{event.event_name}}</a>
+           <!-- <a href="{{event.get_absolute_url}}">{{event.event_name}}</a> -->
+         </h2>
+
+         <div class="entry-meta ps-3">
+          <ul>
+           {%if event.total_likes%}
+            <li class="d-flex align-items-center"><i class="bi bi-heart"></i> <a >{{ event.total_likes }}</a></li>
+             {% else %}
+             <li class="d-flex align-items-center"><i class="bi bi-heart"></i> </li>
+             {%endif%}
+           <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a>{{event.created_date|naturaltime  }}</a></li>
+           {% if event.comments.count  %}
+           <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a>{{ event.comments.count }}</a></li>
+              {%else%}
+              <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> </li>
+             {%endif%}
+             </ul>
+         </div>
+  <hr>
+         <div class="entry-content ps-3 pb-2">
+  {% comment %} <p> <span class="fs-6 fw-bold m-2">Event:</span> <span class="text-muted fw-light">{{artist.event_name}}</span></p> {% endcomment %}
+         <p><span class="fs-6 fw-bold m-2">Location:</span><span class="text-muted fw-light">{{event.event_county}}, {{event.event_location}} </span></p>
+         <p><span class="fs-6 fw-bold m-2">Date:</span><span class="text-muted fw-light">{{event.event_start_date}}</span></p>
+        <p><span class="fs-6 fw-bold m-2">Entry Fee:</span><span class="text-muted fw-light">
+         {% if event.event_charge %}
+         kshs {{event.event_charge}} {% else %} Free Entry
+         {%endif%}</span></p>
+         <p> <span class="fs-6 fw-bold m-2">Catergory:</span> <span class="badge rounded-pill bg-success">
+         <a class="link-light" href="{% url 'event_category' event.category.slug %}">{{ event.category }}</a>
+        </span></p>
+   
+           
+         </div>
+
+       </article><!-- End artists entry -->
+       </div>
+     </div>
+     {% empty %}
+   <div class="col-12 col-sm-12 col-md-12 ">
+     <div class="icon-box text-center">
+     <div class="card m-3 p-3">
+  <div class="card-body">
+    <h5 class="card-title">No Event Posted</h5>
+    <p class="card-text">Sorry ! No Upcoming Event  Has Been Posted !</p>
+    <a href="{% url 'add_artists' %}" class="btn btn-primary">Add An Upcoming Event</a>
+  </div>
+</div>
+   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ducimus blanditiis possimus neque fuga quisquam id, dolor sint deleniti quia aspernatur voluptatem repellendus temporibus recusandae ab ad placeat corporis molestiae alias?
+
+   </div>
+   </div>
+   {% endfor %} 
+
+    
+ </div>
+
+
+              <div class="artists-pagination"> 
+            {% if events.has_other_pages %}
+  <ul class="justify-content-center">
+    {% if events.has_previous %}
+      <li><a href="?page={{ events.previous_page_number }}">&laquo;</a></li>
+    {% endif %}
+
+    {% for i in events.paginator.page_range %}
+      {% if events.number == i %}
+        <li class="active"><a href="#">{{ i }} </a></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}  
+
+    {% endfor %}
+    {% if events.has_next %}
+      <li><a href="?page={{ events.next_page_number }}">&raquo;</a></li>
+    
+    {% endif %}
+  </ul>
+{% endif %}             
+              
+             
+            </div>
+
+          </div><!-- End artists entries list -->
+
+          <div class="col-lg-4">
+           
+
+            <div class="sidebar">
+
+              <h3 class="sidebar-title">Search</h3>
+              <div class="sidebar-item search-form">
+                <form action="">
+                  <input type="text">
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
+              </div><!-- End sidebar search formn-->
+
+             <h3 class="sidebar-title">Categories</h3>
+                <div class="sidebar-item categories">
+                  <ul>
+                  {% get_all_events_categories as categories %}
+                  {% for category in categories%}
+                    <li><a href="{{category.get_absolute_url}}">{{category.name}}<span> {% if category.events_count %} ({{category.events_count}}) {%endif %} </span></a></li>
+                    {% empty %}
+    <div class="card">
+  <div class="card-body text-center">
+
+    <p class="card-text"> No Categeries Found ! </p>
+    
+  </div>
+</div>
+                    {% endfor %}
+                    
+                  </ul>
+                </div><!-- End sidebar categories-->
+            <h3 class="sidebar-title text-center">Recent Posts</h3>
+                <div class="sidebar-item recent-posts">
+                {% get_recent_events as recent_events %}
+                {% for events in recent_events %}
+                  <div class="post-item clearfix">
+                    {% comment %} <img src="{{events.photo.url}}" alt=""> {% endcomment %}
+                    <h4 class="pt-2"><a href="{{events.get_absolute_url}}">{{events.event_name}}</a></h4>
+                   <hr> 
+                    {% comment %} <time>{{events.created_date}}</time> {% endcomment %}
+                  
+                  </div>
+                  {% empty %}
+    <div class="card">
+  <div class="card-body text-center">
+
+    <p class="card-text"> No Recent Events Posted ! </p>
+    
+  </div>
+</div>
+                {% endfor %}
+                  
+
+                </div>
+             
+            </div><!-- End sidebar -->
+
+          </div><!-- End artists sidebar -->
+
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+  </main><!-- End #main -->
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %} Edit Profile Page {% endblock %}
+{% block content %}
+{% load static %}
+{% load crispy_forms_tags %} 
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<main id="main" >
+<br>
+    <!-- ======= artists Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Edit Profile</h2>
+
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li>Edit Profile</li>
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End artists Section -->
+
+    <!-- ======= artists Section ======= -->
+    <section id="artists" class="artists">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+         <div class="col-md-10 mx-auto">
+          <div class="card">
+  <h5 class="card-header text-center py-4">Create Profile</h5>
+  <div class="card-body">
+
+<div class="mb-3">
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="form-row">
+
+      <div class="card my-3">
+  <h5 class="card-header text-center py-2">Personal Information</h5>
+  <div class="card-body">
+   <div class="form-group mb-0">
+        {{ form.type_of_user|as_crispy_field }}
+      </div>
+  <div class="form-group mb-0">
+        {{ form.profile_pic|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.phone_number|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.gender|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.bio|as_crispy_field }}
+      </div>
+       <div class="form-group mb-0">
+        {{ form.City|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.address|as_crispy_field }}
+      </div>
+      </div>
+      </div>
+      <div class="card my-3">
+  <h5 class="card-header text-center py-2">For Artists</h5>
+  <div class="card-body">
+      <div class="form-group mb-0">
+        {{ form.type_of_artists|as_crispy_field }}
+      </div>
+      </div>
+      </div>
+      <div class="card my-3">
+  <h5 class="card-header text-center py-2">For Organization/Company</h5>
+  <div class="card-body">
+      <div class="form-group mb-0">
+        {{ form.organisation_name|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.organisation_email|as_crispy_field }}
+      </div>
+     
+      </div>
+      </div>
+
+      <div class="card my-3">
+  <h5 class="card-header text-center py-2">For Venues</h5>
+  <div class="card-body">
+      
+      <div class="form-group mb-0">
+        {{ form.venue_email|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.venue_name|as_crispy_field }}
+      </div>
+     
+
+      </div>
+      </div>
+
+      <div class="card my-3">
+  <h5 class="card-header text-center py-2">Social Media And Website</h5>
+  <div class="card-body">
+     
+      <div class="form-group mb-0">
+        {{ form.facebook_url|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.twitter_url|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.instagram_url|as_crispy_field }}
+      </div>
+      <div class="form-group mb-0">
+        {{ form.website_url|as_crispy_field }}
+      </div>
+      </div>
+      </div>
+      
+    </div>
+<div class="text-center">
+<button class="btn btn-primary" >Edit Profile</button>
+</div>
+
+</div>
+           
+
+          </div>
+
+          
+        </div>
+        </div>
+
+          
+        </div>
+
+      </div>
+    </section>
+
+</main>
+
+{% endblock %}
